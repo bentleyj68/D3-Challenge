@@ -37,6 +37,10 @@ function makeResponsive() {
   var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+  // Append x Label element
+  var xLabelsGroup = chartGroup.append("g")
+            .attr("transform", `translate(${width / 2}, ${height + 20})`);
+
   // Read CSV
   d3.csv("assets/data/data.csv").then(function(censusData) {
 
@@ -48,7 +52,7 @@ function makeResponsive() {
 
     // create scales
     var xLinearScale = d3.scaleLinear()
-      .domain([0, d3.max(censusData, d => d.poverty)])
+      .domain([8, d3.max(censusData, d => d.poverty)])
       .range([0, width]);
 
     var yLinearScale = d3.scaleLinear()
@@ -73,7 +77,7 @@ function makeResponsive() {
       .enter()
       .append("circle")
       .attr("cx", d => xLinearScale(d.poverty))
-      .attr("cy", d => yLinearScale(d.healthcare + 0.5))
+      .attr("cy", d => yLinearScale(d.healthcare + 0.2))
       .attr("r", "14")
       .attr("class", "stateCircle");
 
@@ -85,6 +89,7 @@ function makeResponsive() {
     .text(d => (d.abbr))
     .attr("x", d => xLinearScale(d.poverty))
     .attr("y", d => yLinearScale(d.healthcare))
+    .attr("font-size", "12px")
     .attr("class", "stateText");
 
     // Initialize Tooltip
@@ -121,6 +126,12 @@ function makeResponsive() {
       .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
       .attr("class", "axisText")
       .text("In Poverty (%)");
+
+    // X labels event listener.
+    xLabelsGroup.selectAll("text")
+    .on("click", function() {
+      console.log("Fuck Yeah");
+    });
 
   }).catch(function(error) {
     console.log(error);
